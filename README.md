@@ -1,6 +1,13 @@
-API Reference page
+# API Reference page
 
 ---
+
+### Getting started
+
+```shell
+npm install -g spectaql
+```
+
 
 ### Edit page
 

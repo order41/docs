@@ -1,0 +1,2840 @@
+schema {
+  query: RootQueryType
+  mutation: RootMutationType
+}
+
+type _PricelistAccessMeta {
+  count: Int
+}
+
+type _PricelistValueMeta {
+  count: Int
+}
+
+"""Type for accepting add to cart attributes"""
+input AddToCartInput {
+  buyerId: ID
+  cartId: ID
+  cartUrlkey: String
+  dropId: ID
+  items: [CartProductInput]
+  productId: ID
+  quantity: Float
+}
+
+"""A background_job"""
+type BackgroundJob {
+  completedAt: DateTime
+  contactId: ID
+  createdAt: DateTime
+  dropId: ID
+  id: ID
+  orderId: ID
+  result: String
+  type: String
+  updatedAt: DateTime
+}
+
+"""A cart"""
+type Cart {
+  _cartProductsMeta: CartProductsMeta @deprecated(reason: "Use _parentProductsMeta instead")
+  _parentProductsMeta: CartProductsMeta
+  buyer: User
+  buyerId: ID
+  cartProducts(
+    """Number of elemts to retrieve, defaults to 100"""
+    first: Int = 100
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [CartProduct] @deprecated(reason: "Use parentProducts instead")
+  createdAt: DateTime
+  creatorType: String
+  drop: Drop
+  dropId: ID
+  guestId: ID
+  id: ID
+  isPrivate: Boolean
+  ownerId: ID
+  parentProducts(
+    """Number of elemts to retrieve, defaults to 100"""
+    first: Int = 100
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """Order for returning products"""
+    orderBy: [CartProductModelOrder] = [ID_DESC]
+  ): [CartProduct]
+  repId: ID
+  seller: User
+  sellerId: ID
+  updatedAt: DateTime
+  urlkey: String
+}
+
+"""Type for accepting cart filter values"""
+input CartFilter {
+  buyerId: IdFilter
+  dropId: IdFilter
+}
+
+input CartInput {
+  buyerId: ID
+  cartProducts: [CartProductInput]
+  dropId: ID
+  guestId: ID
+  isPrivate: Boolean
+  repId: ID
+}
+
+"""Medata data for a list carts query"""
+type CartMeta {
+  count: Int
+}
+
+"""Ordering options for cart lists"""
+enum CartModelOrder {
+  """Ascending by created_at"""
+  CREATED_AT_ASC
+
+  """Descending by created_at"""
+  CREATED_AT_DESC
+
+  """Ascending by updated_at"""
+  UPDATED_AT_ASC
+
+  """Descending by updated_at"""
+  UPDATED_AT_DESC
+}
+
+"""A product in the cart with quantity"""
+type CartProduct {
+  cart: Cart
+  cartId: ID
+  id: ID
+  product: Product
+  productId: ID
+  quantity: Float
+
+  """Cart Product child entries"""
+  variants: [CartProduct]
+}
+
+input CartProductInput {
+  productId: ID!
+  quantity: Float
+}
+
+"""Ordering options for cart product lists"""
+enum CartProductModelOrder {
+  """Ascending by ID"""
+  ID_ASC
+
+  """Descending by ID"""
+  ID_DESC
+}
+
+"""Medata data for a list cart products query"""
+type CartProductsMeta {
+  appliedDiscount: Float
+  count: Int
+  currency: String
+  parentCount: Int
+  quantity: Float
+  summary: String
+  total: Float
+}
+
+"""A request to connect on the platform"""
+type ConnectRequest {
+  acceptedAt: DateTime
+  createdAt: DateTime
+  id: ID
+  rejectedAt: DateTime
+  requesterUser: User
+  targetUser: User
+  updatedAt: DateTime
+}
+
+"""Type for accepting connect request filter values"""
+input ConnectRequestModelFilter {
+  acceptedAt: DatetimeFilter
+  rejectedAt: DatetimeFilter
+  requesterUserId: IdFilter
+  requesterUserUrlkey: UrlkeyFilter
+  targetUserId: IdFilter
+  targetUserUrlkey: UrlkeyFilter
+}
+
+"""Ordering options for connect request lists"""
+enum ConnectRequestModelOrder {
+  """Ascending by ID"""
+  ID_ASC
+
+  """Descending by ID"""
+  ID_DESC
+}
+
+"""contact"""
+type Contact {
+  contactUserId: ID
+  currency: String
+  customId: String
+  defaultSupplier: Int
+  discount: Float
+  email: String
+  externalSystemId: ID
+  id: ID
+  img: [String]
+
+  """Can the contact be invited or not"""
+  invite: Boolean
+  invoiceAddress: String
+  invoiceApartment: String
+  invoiceCity: String
+  invoiceCompany: String
+  invoiceCountry: String
+  invoiceFirstname: String
+  invoiceLastname: String
+  invoicePostalcode: String
+
+  """
+  Access to all suppliers - can sell all products. Relevant for contact type sales rep.
+  """
+  isSuperman: Int
+
+  """
+  Access to all contacts - can sell to all customers. Relevant for contact type sales rep.
+  """
+  isSuperwoman: Int
+  lastInvite: String
+  migrateOldId: String
+  name: String
+  notes: String
+  ownerId: ID
+  paymentBankCustom: String
+  paymentEmail: String
+  paymentIbanCustom: String
+  paymentMethod: String
+  paymentTaxCode: String
+  paymentVatCustom: String
+  phone: String
+  shippingAddress: String
+  shippingApartment: String
+  shippingCity: String
+  shippingCompany: String
+  shippingCountry: String
+  shippingFirstname: String
+  shippingLastname: String
+  shippingPostalcode: String
+  status: Int
+  termOfPayment: String
+
+  """0 = Customer, 1 = Supplier, 2 = Sales Rep, 3 = Team Member"""
+  type: Int
+  urlkey: String
+}
+
+input ContactFilter {
+  contactUserId: IdFilter
+  ownerId: IdFilter
+
+  """Full text search on contact entries"""
+  query: String
+
+  """0 = Customer, 1 = Supplier, 2 = Sales Rep, 3 = Team Member"""
+  type: IntegerFilter
+}
+
+input ContactInput {
+  contactUserId: ID
+  currency: String
+  customId: String
+  defaultSupplier: Int
+  discount: Float
+  email: String
+  externalSystemId: ID
+
+  """Can the contact be invited or not"""
+  invite: Boolean
+  invoiceAddress: String
+  invoiceApartment: String
+  invoiceCity: String
+  invoiceCompany: String
+  invoiceCountry: String
+  invoiceFirstname: String
+  invoiceLastname: String
+  invoicePostalcode: String
+
+  """
+  Access to all suppliers - can sell all products. Relevant for contact type sales rep.
+  """
+  isSuperman: Int
+
+  """
+  Access to all contacts - can sell to all customers. Relevant for contact type sales rep.
+  """
+  isSuperwoman: Int
+  lastInvite: String
+  migrateOldId: String
+  name: String
+  notes: String
+  paymentBankCustom: String
+  paymentEmail: String
+  paymentIbanCustom: String
+  paymentMethod: String
+  paymentTaxCode: String
+  paymentVatCustom: String
+  phone: String
+  shippingAddress: String
+  shippingApartment: String
+  shippingCity: String
+  shippingCompany: String
+  shippingCountry: String
+  shippingFirstname: String
+  shippingLastname: String
+  shippingPostalcode: String
+  status: Int
+  termOfPayment: String
+
+  """0 = Customer, 1 = Supplier, 2 = Sales Rep, 3 = Team Member"""
+  type: Int
+  urlkey: String
+}
+
+"""Ordering options for contact lists"""
+enum ContactModelOrder {
+  """Ascending by created_at"""
+  CREATED_AT_ASC
+
+  """Descending by created_at"""
+  CREATED_AT_DESC
+
+  """Ascending by id"""
+  ID_ASC
+
+  """Descending by id"""
+  ID_DESC
+
+  """Ascending by updated_at"""
+  UPDATED_AT_ASC
+
+  """Descending by updated_at"""
+  UPDATED_AT_DESC
+}
+
+type ContactPage {
+  contactUserId: ID
+  currency: String
+  customId: String
+  defaultSupplier: Int
+  discount: Float
+  email: String
+  externalSystemId: ID
+  group: Int
+  id: ID
+  img: [String]
+
+  """Can the contact be invited or not"""
+  invite: Boolean
+  invoiceAddress: String
+  invoiceApartment: String
+  invoiceCity: String
+  invoiceCompany: String
+  invoiceCountry: String
+  invoiceFirstname: String
+  invoiceLastname: String
+  invoicePostalcode: String
+
+  """
+  Access to all suppliers - can sell all products. Relevant for contact type sales rep.
+  """
+  isSuperman: Int
+
+  """
+  Access to all contacts - can sell to all customers. Relevant for contact type sales rep.
+  """
+  isSuperwoman: Int
+  lastInvite: String
+  members: [String]
+  migrateOldId: String
+  name: String
+  notes: String
+  ownerId: ID
+  paymentBankCustom: String
+  paymentEmail: String
+  paymentIbanCustom: String
+  paymentMethod: String
+  paymentTaxCode: String
+  paymentVatCustom: String
+  phone: String
+  shippingAddress: String
+  shippingApartment: String
+  shippingCity: String
+  shippingCompany: String
+  shippingCountry: String
+  shippingFirstname: String
+  shippingLastname: String
+  shippingPostalcode: String
+  status: Int
+  termOfPayment: String
+
+  """0 = Customer, 1 = Supplier, 2 = Sales Rep, 3 = Team Member"""
+  type: Int
+  urlkey: String
+}
+
+type ContactsMeta {
+  """Count of elements with signed up user accounts attached"""
+  accessCount: Int
+
+  """Count of elemtens in the list"""
+  count: Int
+}
+
+"""Country"""
+type Country {
+  """
+  a two-character country code following ISO 3166 https://www.iso.org/iso-3166-country-codes.html
+  """
+  code: String
+  name: String
+}
+
+input CountryInput {
+  """
+  a two-character country code following ISO 3166 https://www.iso.org/iso-3166-country-codes.html
+  """
+  code: String
+}
+
+input CreateDiscountInput {
+  applications: Int
+  fixedAmountValue: Float
+  name: String
+  ownerId: ID
+  percentageValue: Float
+  quantityOrAmount: Int
+  status: Int
+  type: Int
+  xgetyItems: String
+  xgetyMinimumAmount: Float
+  xgetyMinimumQtyItems: Float
+  xgetyPercentage: Float
+}
+
+input CreatePricelistAccessInput {
+  accessType: Int
+  contactId: ID!
+  pricelistId: ID!
+}
+
+input CreatePricelistInput {
+  access: [PricelistAccessInput]
+
+  """3 character currency code. eg. USD, EUR, NOK ..."""
+  currency: String
+  dropId: ID
+  name: String
+  ownerId: ID
+
+  """
+  Indicates whether pricelist is enabled or disabled 0 enabled, 1 disabled
+  """
+  status: Int
+
+  """
+  Indicates whether pricelist applies to customer currency (0) selected customers (1)
+  """
+  type: Int
+  values: [UpdatePricelistValueInput]
+}
+
+input CreatePricelistValueInput {
+  price: Float!
+  pricelistId: ID!
+  productId: ID!
+  rrp: String
+}
+
+"""credential"""
+type Credential {
+  accountType: Int
+  email: String
+  nlAccept: Int
+  recovery: String
+  recoveryInform: Int
+  representing(
+    """Number of elemts to retrieve, defaults to 10"""
+    first: Int = 10
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [User]
+  status: Int
+  userId: ID
+  welcome: Int
+}
+
+"""The `Date` scalar type represents a date"""
+scalar Date
+
+"""
+The `DateTime` scalar type represents a date and time in the UTC
+timezone. The DateTime appears in a JSON response as an ISO8601 formatted
+string, including UTC timezone ("Z"). The parsed date and time string will
+be converted to UTC and any UTC offset other than 0 will be rejected.
+"""
+scalar DateTime
+
+input DatetimeFilter {
+  eq: DateTime
+  exists: Boolean
+  gt: DateTime
+  lt: DateTime
+}
+
+"""discount"""
+type Discount {
+  applications: Int
+  fixedAmountValue: Float
+  id: ID
+  name: String
+  ownerId: ID
+  percentageValue: Float
+  quantityOrAmount: Int
+  status: Int
+  type: Int
+  urlkey: String
+  xgetyItems: String
+  xgetyMinimumAmount: Float
+  xgetyMinimumQtyItems: Float
+  xgetyPercentage: Float
+}
+
+input DiscountFilter {
+  id: IdFilter
+
+  """Filter discounts by name"""
+  query: String
+}
+
+input DiscountInput {
+  applications: Int
+  fixedAmountValue: Float
+  name: String
+  ownerId: ID
+  percentageValue: Float
+  quantityOrAmount: Int
+  status: Int
+  type: Int
+  urlkey: String
+  xgetyItems: String
+  xgetyMinimumAmount: Float
+  xgetyMinimumQtyItems: Float
+  xgetyPercentage: Float
+}
+
+"""Ordering options for discount lists"""
+enum DiscountModelOrder {
+  """Ascending by created_at"""
+  CREATED_AT_ASC
+
+  """Descending by created_at"""
+  CREATED_AT_DESC
+
+  """Ascending by ID"""
+  ID_ASC
+
+  """Descending by ID"""
+  ID_DESC
+
+  """Ascending by name"""
+  NAME_ASC
+
+  """Descending by name"""
+  NAME_DESC
+
+  """Ascending by updated_at"""
+  UPDATED_AT_ASC
+
+  """Descending by updated_at"""
+  UPDATED_AT_DESC
+}
+
+"""Meta data for a list of discounts"""
+type DiscountsMeta {
+  """Numer of discounts"""
+  count: Int
+}
+
+"""A drop"""
+type Drop {
+  """Drop products metadata"""
+  _dropProductsMeta(
+    """Filters to be applied on the returned objects"""
+    filter: ProductModelFilter = {}
+  ): ProductsMeta
+
+  """Drop product metadata"""
+  _products: ProductsMeta @deprecated(reason: "Use _dropProductsMeta instead")
+  access: Int @deprecated(reason: "Field has never been used")
+  archive: Boolean
+  asset: String @deprecated(reason: "Use assets")
+  assets: [String]
+
+  """Timestamp of when the asset archive file was generated"""
+  assetsArchiveGeneratedAt: DateTime
+
+  """Archive containing all Drop assets"""
+  assetsArchiveUrl: String
+  createdAt: DateTime
+  csvSource: String
+  currencyBuy: String
+  currencySell: String
+
+  """Drop order collection deadline"""
+  deadline: String
+
+  """
+  Identifies whether the deadline is strict or not - orders acceped after deadline or not. 0: False, 1: True
+  """
+  deadlineStop: Int
+
+  """Expected product delivery end date. Only visible in exports."""
+  deliveryEnd: Date
+
+  """Expected product delivery start date. Only visible in exports."""
+  deliveryStart: Date
+
+  """Informative text about the delivery window to displayed on the drop"""
+  deliveryWindow: String
+
+  """List of discount object added to the drop"""
+  discounts(
+    """Number of elements to retrieve, defaults to 100"""
+    first: Int = 100
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [Discount]
+
+  """List of products added to the drop and their order"""
+  dropProducts(
+    """Filters to be applied on the returned objects"""
+    filter: ProductModelFilter = {}
+
+    """Number of elements to retrieve, defaults to 100"""
+    first: Int = 100
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """Specifies the order for the returned objects"""
+    orderBy: [DropProductModelOrder] = [ROW_ORDER_ASC, ID_DESC]
+  ): [DropProduct]
+  filter: Int
+  id: ID
+  images: [String]
+  img: String @deprecated(reason: "Use images")
+
+  """General description of the drop"""
+  info: String
+
+  """Is publicly accesible - without login and access grants"""
+  isPublic: Boolean
+  lastPromotion: String
+  name: String
+  note: String
+  openrate: Int
+
+  """Custom order of the drop in a list view"""
+  order: Int
+  orderItemsQty: Float
+  orderQty: Int
+  orderTotal: Float
+  orderTotalArray: [OrderTotal]
+
+  """Owner of the drop"""
+  owner: User
+  ownerId: String
+
+  """Timestamp of when the pdf catalog was generated"""
+  pdfGeneratedAt: DateTime
+
+  """Drop download as PDF catalog"""
+  pdfUrl: String
+
+  """List of products added to the drop"""
+  products(
+    """
+    1 => custom_field_1
+    2 => custom_field_2
+    3 => custom_field_3
+    4 => custom_field_4
+    5 => custom_field_5
+    6 => custom_field_6
+    7 => custom_field_7
+    8 => custom_field_8
+    9 => supplier_name
+    """
+    filterBy: Int
+
+    """
+    after choosing the filter type (filter_by) this is the corresponding value of the filter_by
+    """
+    filterValue: String
+
+    """Number of elements to retrieve, defaults to 100"""
+    first: Int = 100
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """query string"""
+    query: String
+
+    """value of the type field. like T-Shirt"""
+    typeValue: String
+  ): [Product] @deprecated(reason: "Use dropProducts instead")
+  public: Boolean @deprecated(reason: "Please use isPublic instead")
+  publicVisitorCount: Int
+
+  """
+  Dynamic part of a custom identifier for the drop taken from owner settings.
+  """
+  rangeDropInt: String
+
+  """
+  Static part of a custom identifier for the drop taken from owner settings.
+  """
+  rangeDropText: String
+  season: String
+
+  """0: Not active, 1: Active, 2: Archived"""
+  status: Int
+
+  """Product supplier for drop"""
+  supplier: Contact
+  supplierName: String @deprecated(reason: "Use name on Supplier")
+  updatedAt: DateTime
+  urlkey: String
+}
+
+"""Connection between drop and discount"""
+type DropDiscount {
+  """Drop to witch the discount is attached to"""
+  discount: Discount
+
+  """Drop to witch the discount is attached to"""
+  drop: Drop
+
+  """Uniq ID of the connection between Drop and Discount"""
+  id: ID
+}
+
+"""Type for accepting drop filter values"""
+input DropFilter {
+  ownerId: IdFilter
+  ownerUrlkey: UrlkeyFilter
+
+  """Full text search in name field of the drops"""
+  query: String
+  status: DropStatusFilter
+}
+
+input DropInput {
+  access: Int
+  archive: Boolean
+  assets: [String]
+  csvSource: String
+  currencyBuy: String
+  currencySell: String
+
+  """Drop order collection deadline"""
+  deadline: String
+
+  """
+  Identifies whether the deadline is strict or not - orders acceped after deadline or not. 0: False, 1: True
+  """
+  deadlineStop: Int
+
+  """Expected product delivery end date. Only visible in exports."""
+  deliveryEnd: Date
+
+  """Expected product delivery start date. Only visible in exports."""
+  deliveryStart: Date
+
+  """Informative text about the delivery window to displayed on the drop"""
+  deliveryWindow: String
+  filter: Int
+  images: [String]
+
+  """General description of the drop"""
+  info: String
+
+  """Is publicly accesible - without login and access grants"""
+  isPublic: Boolean
+  lastPromotion: String
+  name: String
+  note: String
+  openrate: Int
+
+  """Custom order of the drop in a list view"""
+  order: Int
+  orderItemsQty: Float
+  orderQty: Int
+  orderTotal: Float
+  publicVisitorCount: Int
+
+  """
+  Dynamic part of a custom identifier for the drop taken from owner settings.
+  """
+  rangeDropInt: String
+
+  """
+  Static part of a custom identifier for the drop taken from owner settings.
+  """
+  rangeDropText: String
+  season: String
+
+  """0: Not active, 1: Active, 2: Archived"""
+  status: Int
+  supplierId: ID
+  supplierName: String
+}
+
+type DropMeta {
+  filterNames: [String]
+  types: [String]
+}
+
+"""Ordering options for drop lists"""
+enum DropModelOrder {
+  """Ascending by created_at"""
+  CREATED_AT_ASC
+
+  """Descending by created_at"""
+  CREATED_AT_DESC
+
+  """Ascending by ID"""
+  ID_ASC
+
+  """Descending by ID"""
+  ID_DESC
+
+  """Ascending by the custom order field"""
+  ORDER_ASC
+
+  """Descending by the custom order field"""
+  ORDER_DESC
+
+  """Ascending by updated_at"""
+  UPDATED_AT_ASC
+
+  """Descending by updated_at"""
+  UPDATED_AT_DESC
+}
+
+type DropProduct {
+  dropId: ID
+
+  """
+  A products association with a drop
+  and it's order between other products
+  """
+  id: ID
+  product: Product
+  productId: ID
+
+  """Integer representing the product order in a list"""
+  rowOrder: Int
+}
+
+"""Ordering options for drop product lists"""
+enum DropProductModelOrder {
+  """Ascending by ID"""
+  ID_ASC
+
+  """Descending by ID"""
+  ID_DESC
+
+  """Ascending by the custom order field"""
+  ROW_ORDER_ASC
+
+  """Descending by the custom order field"""
+  ROW_ORDER_DESC
+}
+
+"""Meta data for a listDrops query"""
+type DropsMeta {
+  """Number of entries returned in a listDrops query"""
+  count: Int
+}
+
+"""Drop status field values and their meaning"""
+enum DropStatus {
+  """Not Active"""
+  INACTIVE
+
+  """Active"""
+  ACTIVE
+
+  """Archived"""
+  ARCHIVED
+}
+
+"""Object for collecting filter arguments for field drop status"""
+input DropStatusFilter {
+  eq: DropStatus
+  neq: DropStatus
+}
+
+type ExternalContact {
+  contactId: ID
+  externalSystemId: ID
+  externalSystemName: String
+  extra: String
+}
+
+input ExternalContactInput {
+  contactId: ID
+  externalSystemId: ID
+  externalSystemName: String
+  extra: String
+}
+
+type ExternalOrder {
+  externalSystemId: ID
+  externalSystemName: String
+  extra: String
+  orderId: ID
+}
+
+input ExternalOrderInput {
+  externalSystemId: ID
+  externalSystemName: String
+  extra: String
+  orderId: ID
+}
+
+type ExternalProduct {
+  externalSystemId: ID
+  externalSystemName: String
+  extra: String
+  productId: ID
+}
+
+input ExternalProductInput {
+  externalSystemId: ID
+  externalSystemName: String
+  extra: String
+  productId: ID
+}
+
+"""Object for collecting filter arguments for field of type ID"""
+input IdFilter {
+  eq: ID
+  neq: ID
+}
+
+input IntegerFilter {
+  eq: Int
+  neq: Int
+}
+
+"""integration"""
+type Integration {
+  id: ID
+  ownerId: ID
+  shopifyAdminApiAccessToken: String
+  shopifyApiSecretKey: String
+  shopifyUrl: String
+}
+
+"""integration_data"""
+type IntegrationData {
+  fieldName: String
+  value: String
+}
+
+input IntegrationDataInput {
+  fieldName: String
+  value: String
+}
+
+input IntegrationInput {
+  shopifyAdminApiAccessToken: String
+  shopifyApiSecretKey: String
+  shopifyUrl: String
+}
+
+"""Meta data for a list connect requests query"""
+type ListConnectRequestsMeta {
+  count: Int
+}
+
+"""Metadata of a list notification query"""
+type ListNotificationsMeta {
+  count: Int
+}
+
+input LoginOptions {
+  countryCode: String
+}
+
+"""A notification"""
+type Notification {
+  createdAt: DateTime
+  id: ID
+  object: NotificationObject
+  payload: String
+  seenAt: DateTime
+  type: String
+  updatedAt: DateTime
+}
+
+input NotificationFilter {
+  seenAt: DatetimeFilter
+}
+
+"""Subject of the notification"""
+union NotificationObject = ConnectRequest
+
+input Option {
+  name: String
+  value: String
+}
+
+"""A order"""
+type Order {
+  appliedDiscountId: ID
+  appliedPricelistId: ID
+  buyer: Contact
+  buyerId: ID
+  buyerName: String
+  cancel: Int
+  comment: String
+  createdAt: DateTime
+  currency: String
+  customDiscount: String
+
+  """User defined custom id"""
+  customId: String
+  drop: Drop
+  dropId: ID
+  externalSystemId: ID
+  extraCosts: Float
+  id: ID
+
+  """inform email sent out yes/no -> 1/0"""
+  inform: Int
+  invoiceNo: String
+  isSeller: Boolean
+
+  """
+  Order status with value meanings:
+    "0" = "New"
+    "1" = "In progress"
+    "2" = "On hold"
+    "3" = "Complete"
+    "4" = "Guest order"
+    "5" = "Shipped"
+    "6" = "Approved"
+  """
+  orderTag: String
+  ownerId: ID
+  parentProducts(
+    """Number of elements to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [OrderProduct]
+  products(
+    """Number of elements to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [Product]
+  qty: Float
+  rangeOrderInt: String
+  rangeOrderText: String
+  repId: ID
+  rows(
+    """Number of elements to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [OrderRow]
+  sellerId: ID
+  shippingCosts: Float
+
+  """
+  Decides if order is visible in the order downloads
+    0 = disabled
+    1 = enabled
+  """
+  status: Int
+  supplierId: String
+  supplierName: String
+  totalAmount: Float
+  updatedAt: DateTime
+
+  """Non sequential unique identifier"""
+  urlkey: String
+
+  """Value-added tax"""
+  vat: String
+}
+
+input OrderFilter {
+  """User id of the buyer"""
+  buyerId: IdFilter
+  dropId: IdFilter
+  orderTag: OrderTagOption
+  query: String
+  status: OrderStatusOption
+}
+
+"""Ordering options for order lists"""
+enum OrderingOptions {
+  """Ascending by created_at"""
+  CREATED_AT_ASC
+
+  """Descending by created_at"""
+  CREATED_AT_DESC
+
+  """Ascending by ID"""
+  ID_ASC
+
+  """Descending by ID"""
+  ID_DESC
+
+  """Ascending by updated_at"""
+  UPDATED_AT_ASC
+
+  """Descending by updated_at"""
+  UPDATED_AT_DESC
+}
+
+input OrderInput {
+  appliedDiscountId: ID
+  appliedPricelistId: ID
+  buyerEmail: String
+  buyerId: ID
+  buyerName: String
+  cancel: Int
+  comment: String
+  currency: String
+  customDiscount: String
+  dropId: ID
+  dropName: String
+  dropSeason: String
+  externalSystemId: ID
+  extraCosts: Float
+  inform: Int
+  informAdmin: Int
+  invoiceDate: DateTime
+  invoiceNo: String
+  isPrivate: Int
+  isSeller: Int
+  orderTag: Int
+  qty: Float
+  rangeOrderInt: String
+  rangeOrderText: String
+  repId: ID
+  sellerId: ID
+  shippingCosts: Float
+  status: Int
+  supplierName: String
+  totalAmount: Float
+  vat: String
+}
+
+enum OrderPdfs {
+  DELIVERY_NOTE
+  INVOICE
+}
+
+"""get validated pricelist_id of the order"""
+type OrderPricelist {
+  pricelistId: ID
+  valid: Boolean
+}
+
+"""order product"""
+type OrderProduct {
+  price: Float
+  product: Product
+  quantity: Float
+  variants: [OrderProduct]
+}
+
+"""A order row with data on ordered quantity, price and product"""
+type OrderRow {
+  id: ID
+
+  """Product price at time of order"""
+  price: Float
+  product: Product
+  quantity: Int
+}
+
+"""orders meta"""
+type OrdersMeta {
+  count: Int
+}
+
+"""List of potential values for the Order status field"""
+enum OrderStatusOption {
+  """Order NOT visible in downloads"""
+  DISABLED
+
+  """Order visible in downloads"""
+  ENABLED
+}
+
+"""List of potential values for the Order orderTag field"""
+enum OrderTagOption {
+  """New"""
+  NEW
+
+  """In progress"""
+  PROGRESS
+
+  """On hoald"""
+  HOLD
+
+  """Complete"""
+  COMPLETE
+
+  """Guest order"""
+  GUEST
+
+  """Shipped"""
+  SHIPPED
+
+  """Approved"""
+  APPROVED
+}
+
+type OrderTotal {
+  amount: String
+  currency: String
+}
+
+"""Presigned S3 file upload url"""
+type PresignedPut {
+  url: String
+}
+
+"""pricelist"""
+type Pricelist {
+  _access: _PricelistAccessMeta
+  _values: _PricelistValueMeta
+  access(
+    """Number of elements to retrieve, defaults to 100"""
+    first: Int = 100
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [PricelistAccess]
+
+  """3 character currency code. eg. USD, EUR, NOK ..."""
+  currency: String
+  drop: Drop
+  dropId: ID
+  dropName: String
+  id: ID
+  name: String
+  owner: User
+  ownerId: ID
+
+  """
+  Indicates whether pricelist is enabled or disabled 0 enabled, 1 disabled
+  """
+  status: Int
+
+  """
+  Indicates whether pricelist applies to customer currency (0) selected customers (1)
+  """
+  type: Int
+  urlkey: String
+  values(
+    """Number of elements to retrieve, defaults to 100"""
+    first: Int = 100
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [PricelistValue]
+}
+
+type PricelistAccess {
+  accessType: Int
+  contact: Contact
+  contactId: ID
+  contactUserId: ID
+  drop: Drop
+  dropId: ID
+  id: ID
+  ownerId: ID
+  pricelistId: ID
+}
+
+input PricelistAccessInput {
+  accessType: Int
+  contactId: ID
+}
+
+input PricelistFilter {
+  query: String
+}
+
+"""Ordering options for order lists"""
+enum PricelistOrderingOptions {
+  """Ascending by created_at"""
+  CREATED_AT_ASC
+
+  """Descending by created_at"""
+  CREATED_AT_DESC
+
+  """Ascending by ID"""
+  ID_ASC
+
+  """Descending by ID"""
+  ID_DESC
+
+  """Ascending by updated_at"""
+  UPDATED_AT_ASC
+
+  """Descending by updated_at"""
+  UPDATED_AT_DESC
+}
+
+"""pricelist_value"""
+type PricelistValue {
+  drop: Drop
+  dropId: ID
+  id: ID
+  ownerId: ID
+  price: Float
+  priceList: Float @deprecated(reason: "Use price instead")
+  pricelistId: ID
+  product: Product
+  productId: ID
+  rrp: String
+  rrpList: String @deprecated(reason: "Use rrp instead")
+}
+
+"""A product"""
+type Product {
+  cost: Float
+  createdAt: DateTime
+  customField1: String
+  customField2: String
+  customField3: String
+  customField4: String
+  customField5: String
+  customField6: String
+  customField7: String
+  customField8: String
+
+  """User defined custom id of the product"""
+  customId: String
+  customIdInt: String @deprecated(reason: "use customId instead")
+  customIdText: String @deprecated(reason: "use customId instead")
+
+  """International (European) Article Number of the product"""
+  ean: String
+  externalSystemId: ID
+  id: ID
+  images: [String]
+  img: String @deprecated(reason: "use images")
+
+  """Generic product description"""
+  info: String
+  inventoryStock: String
+  inventoryStockLimit: String @deprecated(reason: "Not in use")
+  material: String
+  name: String
+
+  """Custom variant value for the first configured field"""
+  optionValue1: String
+
+  """Custom variant value for the second configured field"""
+  optionValue2: String
+  origin: String
+
+  """Parent product"""
+  parent: Product
+  parentId: ID
+  parentOrChild: String
+  price: Float
+  rangeProductInt: String @deprecated(reason: "use customId instead")
+  rangeProductText: String @deprecated(reason: "use customId instead")
+
+  """Business. Recommended retail price"""
+  rrp: String
+
+  """Stock-keeping unit (SKU) is a scannable bar code"""
+  sku: String
+  soldOut: Boolean
+  supplier: Contact
+  supplierId: ID
+  supplierName: String @deprecated(reason: "Use name on Supplier")
+
+  """
+  Code designed to show the various rules applying to specific
+  products when imported into the EU
+  """
+  taric: String
+  type: String
+  updatedAt: DateTime
+
+  """Non sequential unique identifier"""
+  urlkey: String
+
+  """Product variants if they exists"""
+  variants(
+    """Number of elemts to retrieve, defaults to 100"""
+    first: Int = 100
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [Product]
+}
+
+input ProductFilter {
+  parentId: IdFilter
+  query: String
+}
+
+input ProductInput {
+  cost: Float
+  customField1: String
+  customField2: String
+  customField3: String
+  customField4: String
+  customField5: String
+  customField6: String
+  customField7: String
+  customField8: String
+  customIdInt: String
+  customIdText: String
+  ean: String
+  externalSystemId: ID
+  img: [Upload]
+  imgUrls: [String]
+  info: String
+  inventoryStock1: String
+  inventoryStock1Limit: String
+  inventoryStock2: String
+  inventoryStock3: String
+  inventoryStock4: String
+  inventoryStock5: String
+  inventoryUnit: Int
+  material: String
+  name: String
+  optionName1: String
+  optionName2: String
+  optionName3: String
+  optionName4: String
+  optionName5: String
+  optionValue1: String
+  optionValue2: String
+  optionValue3: String
+  optionValue4: String
+  optionValue5: String
+  options: [Option]
+  origin: String
+  parentId: ID
+  parentOrChild: String
+  price: Float
+  qtyCart: String
+  rangeProductInt: String
+  rangeProductText: String
+  rrp: String
+  sku: String
+  supplierId: ID
+  taric: String
+  type: String
+}
+
+input ProductModelFilter {
+  customField1: StringFilter
+  customField2: StringFilter
+  customField3: StringFilter
+  customField4: StringFilter
+  customField5: StringFilter
+  customField6: StringFilter
+  customField7: StringFilter
+  customField8: StringFilter
+  parentId: IdFilter
+
+  """Filtering options for Product model elements"""
+  query: String
+  supplierId: IdFilter
+  type: StringFilter
+}
+
+"""Ordering options for product lists"""
+enum ProductModelOrder {
+  """Ascending by created_at"""
+  CREATED_AT_ASC
+
+  """Descending by created_at"""
+  CREATED_AT_DESC
+
+  """Ascending by ID"""
+  ID_ASC
+
+  """Descending by ID"""
+  ID_DESC
+
+  """Ascending by updated_at"""
+  UPDATED_AT_ASC
+
+  """Descending by updated_at"""
+  UPDATED_AT_DESC
+}
+
+type ProductsMeta {
+  count: Int
+}
+
+"""All top level data manipulation oprations can be found here"""
+type RootMutationType {
+  """Accept a connect request"""
+  acceptConnectRequest(id: ID): ConnectRequest
+
+  """Add a discount to the drop"""
+  addDiscount(
+    """Id of the discount"""
+    discountId: ID!
+
+    """Id of the drop"""
+    dropId: ID!
+  ): DropDiscount
+  addProductToOrder(
+    """id of the drop"""
+    id: ID
+
+    """product id"""
+    productId: ID
+
+    """quantity of the order product"""
+    quantity: Float
+
+    """urlkey of the order"""
+    urlkey: String
+  ): Order
+
+  """
+  Add products to drop
+  returns the number of products added to the drop
+  """
+  addProductsToDrop(
+    """ID of the Drop"""
+    dropId: ID
+
+    """product_ids that will be added to the drop"""
+    productIds: [ID]
+  ): Int
+  addToCart(cartProduct: AddToCartInput, input: AddToCartInput): Cart
+
+  """copy demo account"""
+  copyDemoAccount(
+    """Email of the new user"""
+    email: String!
+
+    """urlkey of the demo account to copy"""
+    urlkey: String!
+  ): String
+
+  """
+  starts the bg job for copying a drop
+  returns the related job id
+  """
+  copyDrop(
+    """urlkey of the Drop"""
+    dropUrlkey: String!
+
+    """urlkey of the target user"""
+    targetUserUrlkey: String!
+  ): BackgroundJob
+
+  """create contacts"""
+  createContact(
+    """email of the newly created contact"""
+    email: String
+
+    """name of the newly created contact"""
+    name: String
+
+    """a list of user ids of sellers (sales reps)"""
+    sellerUserIds: [Int] = []
+  ): ContactPage
+
+  """Create discount"""
+  createDiscount(discount: CreateDiscountInput): String
+  createDrop(
+    """Data to be filled out for a new drop"""
+    input: DropInput!
+  ): Drop
+
+  """Create order from a Cart id/urlkey and a note"""
+  createOrder(
+    """Cart urlkey"""
+    id: ID
+
+    """Commet to be added to the order"""
+    note: String
+
+    """Cart ID"""
+    urlkey: String
+  ): Order
+
+  """Create pricelist"""
+  createPricelist(pricelist: CreatePricelistInput!): Pricelist
+
+  """Create pricelist access"""
+  createPricelistAccess(pricelistAccess: CreatePricelistAccessInput!): PricelistAccess
+
+  """Create pricelist value"""
+  createPricelistValue(pricelistValue: CreatePricelistValueInput!): PricelistValue
+
+  """create product"""
+  createProduct(
+    """product data"""
+    data: ProductInput
+  ): String
+
+  """delete single Cart by ID or urlkey"""
+  deleteCart(
+    """ID of the Cart"""
+    id: ID
+
+    """urlkey of the Cart"""
+    urlkey: String
+  ): Cart
+
+  """delete contact"""
+  deleteContact(
+    """id of the contact to be deleted"""
+    contactId: ID
+  ): String
+
+  """Delete discount"""
+  deleteDiscount(
+    """Discount id"""
+    discountId: ID!
+  ): String
+
+  """delete a Drop by ID"""
+  deleteDrop(
+    """ID of the Drop"""
+    id: ID
+
+    """urlkey of the Drop"""
+    urlkey: String
+  ): Drop
+
+  """Removes integration by id"""
+  deleteIntegration(
+    """Integration id"""
+    id: ID
+  ): Boolean
+
+  """delete an order by ID or urlkey"""
+  deleteOrder(
+    """ID of the order"""
+    id: ID
+
+    """urlkey of the order"""
+    urlkey: String
+  ): Order
+
+  """Delete pricelist"""
+  deletePricelist(
+    """Pricelist id"""
+    pricelistId: ID!
+  ): String
+
+  """Delete pricelist access"""
+  deletePricelistAccess(
+    """Contact id"""
+    contactId: ID
+
+    """Pricelist value id"""
+    id: ID
+
+    """Pricelist id"""
+    pricelistId: ID
+  ): PricelistAccess
+
+  """Delete pricelist value"""
+  deletePricelistValue(
+    """Pricelist value id"""
+    id: ID!
+  ): PricelistValue
+
+  """download contacts"""
+  downloadContacts(
+    """excel or csv"""
+    type: String = "excel"
+  ): String
+
+  """duplicate (copy) single Cart by ID or urlkey"""
+  duplicateCart(
+    """ID of the Cart"""
+    id: ID
+
+    """urlkey of the Cart"""
+    urlkey: String
+  ): Cart
+
+  """duplicate a Drop by ID or urlkey"""
+  duplicateDrop(
+    """ID of the Drop"""
+    id: ID
+
+    """urlkey of the Drop"""
+    urlkey: String
+  ): Drop
+
+  """generate asset archive"""
+  generateAssetArchive(
+    """drop id"""
+    dropId: ID
+  ): BackgroundJob
+
+  """
+  starts the bg job for creating orders_overview_speradsheet.
+  returns the related job id
+  """
+  generateDropOrdersOverviewSpreadsheet(
+    """ID of the Drop"""
+    id: ID
+    type: SpreadsheetType = EXCEL
+  ): BackgroundJob
+
+  """
+  starts the bg job for creating orders_speradsheet.
+  returns the related job id
+  """
+  generateDropOrdersSpreadsheet(
+    """ID of the Drop"""
+    id: ID!
+    type: SpreadsheetType = EXCEL
+  ): BackgroundJob
+
+  """generate drop pdf"""
+  generateDropPdf(
+    """drop id"""
+    dropId: ID
+  ): BackgroundJob
+
+  """
+  starts the bg job for generating the drop products images
+  zip file. returns the related job id
+  """
+  generateDropProductsImagesZip(
+    """ID of the Drop"""
+    id: ID!
+  ): BackgroundJob
+
+  """
+  starts the bg job for creating drop_products_speradsheet.
+  returns the related job id
+  """
+  generateDropProductsSpreadsheet(
+    """ID of the Drop"""
+    id: ID!
+    type: SpreadsheetType = EXCEL
+  ): BackgroundJob
+
+  """
+  starts the bg job for creating supplier_order_speradsheet.
+  returns the related job id
+  """
+  generateDropSupplierOrderSpreadsheet(
+    """ID of the Drop"""
+    id: ID!
+    type: SpreadsheetType = EXCEL
+  ): BackgroundJob
+
+  """Generates a guest user identifier"""
+  generateGuestId: Token
+  generateInvoice(
+    """ID of the order"""
+    id: ID!
+    type: OrderPdfs = INVOICE
+  ): BackgroundJob
+
+  """generate integration token and save it to integrations table"""
+  generateLongLivedToken: Token
+  generateOrderConfirmationSpreadsheet(
+    """ID of the order"""
+    id: ID!
+    type: SpreadsheetType = EXCEL
+  ): BackgroundJob
+
+  """
+  Get a direct file upload URL
+  to be used to do a PUT request with
+  file content
+  """
+  generatePresignedPut(
+    """Name of file to be uploaded"""
+    fileName: String
+  ): PresignedPut
+
+  """Get integration token"""
+  integrationToken(
+    """if nouser token is used this is required"""
+    userId: ID
+  ): String
+
+  """invalidate token"""
+  invalidateToken: String
+
+  """Get token"""
+  login(
+    """Email of the user"""
+    email: String!
+
+    """Additional information to be provided with the login."""
+    options: LoginOptions = {countryCode: ""}
+
+    """Password of the user"""
+    password: String!
+  ): String
+
+  """login_as"""
+  loginAs(
+    """Email of the user"""
+    email: String!
+  ): String
+
+  """order drops of user"""
+  orderDrops(
+    """drop ids"""
+    dropIds: [ID]
+  ): String
+
+  """put external contacts"""
+  putExternalContacts(
+    """external contacts"""
+    externalContacts: [ExternalContactInput]
+  ): String
+
+  """put external order ids"""
+  putExternalOrders(
+    """external orders"""
+    externalOrders: [ExternalOrderInput]
+  ): String
+
+  """put external product ids"""
+  putExternalProducts(
+    """external product ids"""
+    externalProducts: [ExternalProductInput]
+  ): String
+
+  """put integration (creates or updates integration)"""
+  putIntegration(
+    """integration data"""
+    data: IntegrationInput
+  ): String
+
+  """put integration data"""
+  putIntegrationData(
+    """list of key values"""
+    keysValues: [IntegrationDataInput]
+
+    """if nouser token is used this is required"""
+    userId: ID
+  ): String
+
+  """Mark a notification as read"""
+  readNotification(id: ID): Notification
+
+  """Reject a connect request"""
+  rejectConnectRequest(id: ID): ConnectRequest
+
+  """Remove discount from a drop"""
+  removeDiscount(
+    """Id of the discount"""
+    discountId: ID!
+
+    """Id of the drop"""
+    dropId: ID!
+  ): DropDiscount
+
+  """Remove product from a cart"""
+  removeFromCart(
+    """Cart identifier"""
+    cartId: ID
+
+    """Cart urlkey"""
+    cartUrlkey: String
+
+    """Product identifier"""
+    productId: ID!
+
+    """Optional quantity to be removed - all if not specified"""
+    quantity: Float
+  ): CartProduct
+
+  """
+  Remove products from drop
+  returns the number of products removed from the drop
+  """
+  removeProductsFromDrop(
+    """ID of the Drop"""
+    dropId: ID
+
+    """product_ids that will be added to the drop"""
+    productIds: [ID]
+  ): Int
+
+  """return order to stock"""
+  returnOrderToStock(
+    """ID of the order"""
+    id: ID
+
+    """urlkey of the order"""
+    urlkey: String
+  ): Order
+
+  """Send a connect request to user"""
+  sendConnectRequest(userId: ID): ConnectRequest
+
+  """Trigger resending of order confirmation email"""
+  sendOrderConfirmation(
+    """order id"""
+    id: ID
+  ): Order
+
+  """share a Drop by id or urlkey"""
+  shareDrop(
+    """ID of the Drop"""
+    id: ID
+
+    """Sharing details and configuration"""
+    input: ShareDropInput!
+
+    """urlkey of the Drop"""
+    urlkey: String
+  ): Drop
+
+  """Signup"""
+  signup(
+    """Email of the user"""
+    email: String!
+
+    """Password of the user"""
+    password: String!
+  ): String
+
+  """Mark a notification as unread"""
+  unreadNotification(id: ID): Notification
+
+  """duplicate (copy) single Cart by ID or urlkey"""
+  updateCart(
+    """updated Cart data"""
+    cartData: CartInput
+
+    """ID of the Cart"""
+    id: ID
+
+    """urlkey of the Cart"""
+    urlkey: String
+  ): Cart
+
+  """Update the quantity of a product in cart"""
+  updateCartProduct(
+    """ID of the Cart"""
+    cartId: ID
+
+    """urlkey of the Cart"""
+    cartUrlkey: String
+
+    """Product id whos quantity needs to be adjusted"""
+    productId: ID!
+
+    """New quantity of the product in cart"""
+    quantity: Float!
+  ): CartProduct
+
+  """update contact"""
+  updateContact(
+    """contact data"""
+    data: ContactInput
+
+    """id of the contact to be updated"""
+    id: ID
+  ): String
+
+  """Update discount"""
+  updateDiscount(
+    discount: DiscountInput
+
+    """Id of the discount"""
+    id: ID!
+  ): String
+  updateDrop(
+    """drop data for updateing"""
+    dropData: DropInput!
+
+    """ID of the Drop"""
+    id: ID
+
+    """urlkey of the Drop"""
+    urlkey: String
+  ): Drop
+
+  """
+  Updates Drop and product association - currenty only one field `rowOrder`
+  """
+  updateDropProduct(
+    """ID of the Drop"""
+    dropId: ID
+
+    """ID of the DropProduct association"""
+    id: ID
+
+    """ID of the Product"""
+    productId: ID
+
+    """Product order in the drop products list"""
+    rowOrder: Int!
+  ): DropProduct
+
+  """update order"""
+  updateOrder(
+    """order data"""
+    data: OrderInput
+    id: Int
+  ): String @deprecated(reason: "use updateOrder2")
+  updateOrder2(
+    """order data"""
+    data: OrderInput
+    id: ID
+    urlkey: String
+  ): Order
+
+  """update password"""
+  updatePassword(
+    """New password of the user"""
+    newPassword: String!
+
+    """Current Password of the user"""
+    password: String!
+  ): String
+
+  """Update single procelist"""
+  updatePricelist(
+    """Unique identifier of a pricelist"""
+    id: ID!
+    pricelist: CreatePricelistInput!
+  ): Pricelist
+
+  """Update pricelist value"""
+  updatePricelistValue(
+    """Pricelist value ID"""
+    id: ID!
+    pricelistValue: UpdatePricelistValueInput!
+  ): PricelistValue
+
+  """Update mulitple pricelist values based on product ID"""
+  updatePricelistValues(
+    """Pricelist ID"""
+    pricelistId: ID!
+    values: [UpdatePricelistValueInput]!
+  ): [PricelistValue]
+
+  """Update single product data"""
+  updateProduct(
+    """Attributes to updates within the product."""
+    data: UpdateProductInput!
+
+    """Unique identifier of the entity"""
+    id: ID
+  ): Product
+
+  """Update the user profile data"""
+  updateProfile(
+    """User data for updating purposes"""
+    user: UserInput
+  ): User
+
+  """Get user settings"""
+  updateSetting(settings: SettingInput): String
+}
+
+"""All top level data retrival oprations can be found here"""
+type RootQueryType {
+  """get drop meta"""
+  _getDropMeta(
+    """ID of the Drop"""
+    id: ID
+
+    """urlkey of the Drop"""
+    urlkey: String
+  ): DropMeta
+
+  """Get a list of carts"""
+  _listCartsMeta(
+    """Filters to be applied to the notification query"""
+    filter: CartFilter
+  ): CartMeta
+
+  """Get a meta data for a list of connect requests for the current user"""
+  _listConnectRequestsMeta(
+    """Filters to be applied on the connect requests query"""
+    filter: ConnectRequestModelFilter = {}
+  ): ListConnectRequestsMeta
+
+  """Retrieve metadata for a list of contacts"""
+  _listContactsMeta(
+    """Conditions for filter contact results"""
+    filter: ContactFilter
+  ): ContactsMeta
+
+  """Meta data for a list of discounts"""
+  _listDiscountsMeta(
+    """Filters to be applied to the discounts query"""
+    filter: DiscountFilter = {}
+  ): DiscountsMeta
+
+  """Retrieve meta data for a listDrops query"""
+  _listDropsMeta(
+    """Filters to be applied on the carts query"""
+    filter: DropFilter = {}
+  ): DropsMeta
+
+  """Get metadata for a list of notifications"""
+  _listNotificationsMeta(
+    """Filters to be applied to the notification query"""
+    filter: NotificationFilter = {}
+  ): ListNotificationsMeta
+  _listOrdersMeta(
+    """filtering options for orders"""
+    filter: OrderFilter = {}
+  ): OrdersMeta
+
+  """Get a list of drops"""
+  drops(
+    """Number of elemts to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [Drop] @deprecated(reason: "Use listDrops instead")
+
+  """Get a list of suggested drops"""
+  exploreDrops(
+    """Number of elemts to retrieve, defaults to 3"""
+    first: Int = 3
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [Drop]
+
+  """Reject a connect request"""
+  getBackgroundJob(
+    """bg job id"""
+    id: ID!
+  ): BackgroundJob
+
+  """Get single Cart by ID or urlkey"""
+  getCart(
+    """ID of the Cart"""
+    id: ID
+
+    """urlkey of the Cart"""
+    urlkey: String
+  ): Cart
+
+  """Retrieve single connect request by id"""
+  getConnectRequest(id: ID): ConnectRequest
+
+  """Get credential for the user"""
+  getCredential: Credential
+
+  """get discount by id"""
+  getDiscount(
+    """discount id"""
+    discountId: ID
+  ): Discount
+
+  """get discounts"""
+  getDiscounts(
+    """Number of elemts to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """filter discounts by name"""
+    query: String = ""
+  ): [Discount] @deprecated(reason: "Use listDiscounts insptead")
+
+  """Get single Drop by ID"""
+  getDrop(
+    """ID of the Drop"""
+    id: ID
+
+    """urlkey of the Drop"""
+    urlkey: String
+  ): Drop
+
+  """Retrieve user profile by a drop ID or urlkey"""
+  getDropProfile(
+    """ID of a drop owned by the user"""
+    id: ID
+
+    """urlkey of a drop owned by the user"""
+    urlkey: String
+  ): User
+
+  """get external contacts"""
+  getExternalContacts(
+    """contact ids"""
+    contactIds: [ID]
+  ): [ExternalContact]
+
+  """get external order ids"""
+  getExternalOrders(
+    """order ids"""
+    orderIds: [ID]
+  ): [ExternalOrder]
+
+  """get external product ids"""
+  getExternalProducts(
+    """product ids"""
+    productIds: [ID]
+  ): [ExternalProduct]
+
+  """get integration"""
+  getIntegration(
+    """if nouser token is used this is required"""
+    userId: ID
+  ): Integration
+
+  """get integration data"""
+  getIntegrationData(
+    """list of field names to get"""
+    fieldNames: [String]
+
+    """if nouser token is used this is required"""
+    userId: ID
+  ): [IntegrationData]
+
+  """get integration by order id"""
+  getIntegrationTokenByOrderId(orderId: ID): IntegrationData
+
+  """many gql queries grouped together"""
+  getOrder(
+    """ID of the order"""
+    id: ID
+
+    """urlkey of the order"""
+    urlkey: String
+  ): Order
+
+  """Get order's (valid) pricelist_id"""
+  getOrdersPricelistId(
+    """order id"""
+    orderId: ID
+  ): OrderPricelist
+
+  """Retrieve single pricelist by id"""
+  getPricelist(
+    """Unique identifier of a pricelist"""
+    id: ID
+  ): Pricelist
+
+  """Get pricelist values by id"""
+  getPricelistValuesByPricelistId(pricelistId: ID!): [PricelistValue]
+
+  """get pricelists"""
+  getPricelists(
+    """Number of elemts to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """filter pricelists by name"""
+    query: String = ""
+  ): [Pricelist] @deprecated(reason: "listPricelists instead")
+
+  """Get a single product"""
+  getProduct(
+    """Unique identifier of the entity"""
+    id: ID
+
+    """Unique non sequential identifier of the entity"""
+    urlkey: String
+  ): Product
+
+  """Get a list  of products by ids"""
+  getProductsByIds(
+    """product ids"""
+    productIds: [ID]
+  ): [Product]
+  getProfile(
+    """ID of the user to be retrieved"""
+    id: ID
+
+    """urlkey of the user to be retrieved"""
+    urlkey: String
+  ): User
+  getProfiles: [User] @deprecated(reason: "To be removed without replacement")
+
+  """Get user settings"""
+  getSetting: Setting
+
+  """Get a list of carts"""
+  listCarts(
+    """Filters to be applied to the carts query"""
+    filter: CartFilter = {}
+
+    """Number of elements to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """Options for sorting the results"""
+    orderBy: [CartModelOrder] = [UPDATED_AT_DESC]
+  ): [Cart]
+
+  """Get a list of connect requests for current user"""
+  listConnectRequests(
+    """Filters to be applied on the connect requests query"""
+    filter: ConnectRequestModelFilter = {}
+
+    """Number of elemts to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """Options for sorting the results"""
+    orderBy: [ConnectRequestModelOrder] = [ID_DESC]
+  ): [ConnectRequest]
+
+  """Get a list of contacts"""
+  listContacts(
+    """Conditions for filter contact results"""
+    filter: ContactFilter
+
+    """Number of elements to retrieve, defaults to 10"""
+    first: Int = 10
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """filter contacts by name ..."""
+    query: String = ""
+
+    """filter by type (0=customer, 1=supplier, 2=sales rep, 3=team member)"""
+    type: Int = 4
+  ): UserContact @deprecated(reason: "Please use listContactsV2 and _listContactsMeta instead")
+  listContactsV2(
+    """Conditions for filter contact results"""
+    filter: ContactFilter
+
+    """Number of elements to retrieve, defaults to 10"""
+    first: Int = 10
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """Options for sorting the results"""
+    orderBy: [ContactModelOrder] = [ID_DESC]
+  ): [Contact]
+
+  """List discounts with pagination and filtering"""
+  listDiscounts(
+    """Filters to be applied to the discounts query"""
+    filter: DiscountFilter = {}
+
+    """Number of elemts to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """Filters to be applied to the discounts query"""
+    orderBy: [DiscountModelOrder] = [ID_DESC]
+  ): [Discount]
+
+  """Retrieve list a paginated list of drops"""
+  listDrops(
+    """Filters to be applied on the drops query"""
+    filter: DropFilter = {}
+
+    """Number of elemts to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """Options for sorting the results"""
+    orderBy: [DropModelOrder] = [UPDATED_AT_DESC]
+  ): [Drop]
+
+  """Get a list of notifications"""
+  listNotifications(
+    """Filters to be applied to the notification query"""
+    filter: NotificationFilter = {}
+
+    """Number of elemts to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [Notification]
+  listOrders(
+    """filtering options for orders"""
+    filter: OrderFilter = {}
+
+    """Number of elements to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """Options for sorting the results"""
+    orderBy: [OrderingOptions] = [ID_ASC]
+  ): [Order]
+
+  """Get a list of partner accounts"""
+  listPartners(
+    """Number of elements to retrieve, defaults to 10"""
+    first: Int = 10
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [User]
+
+  """list pricelists"""
+  listPricelists(
+    """filtering options for orders"""
+    filter: PricelistFilter = {}
+
+    """Number of elemts to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """Options for sorting the results"""
+    orderBy: [PricelistOrderingOptions] = [ID_ASC]
+  ): [Pricelist]
+
+  """Retrieve a list of products"""
+  listProducts(
+    """filters for the product list"""
+    filter: ProductFilter = {parentId: {eq: ""}}
+
+    """Number of elements to retrieve, defaults to 10"""
+    first: Int = 10
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """Options for sorting the results"""
+    orderBy: [ProductModelOrder] = [ID_DESC]
+  ): [Product]
+
+  """
+  Retrive a list of 3 character currency codes
+  used by the order41 system
+  """
+  listSystemCurrencyCodes: [String]
+
+  """Get a list of orders"""
+  orders(
+    """Number of elements to retrieve, defaults to 25"""
+    first: Int = 25
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+
+    """filtering options for orders"""
+    orderFilter: OrderFilter = {}
+  ): [Order] @deprecated(reason: "Use listOrders instead")
+
+  """Get a list of orders by ids"""
+  ordersByIds(
+    """order ids"""
+    orderIds: [ID]
+  ): [Order]
+
+  """Get a list  of products"""
+  products(
+    """Number of elements to retrieve, defaults to 10"""
+    first: Int = 10
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [Product] @deprecated(reason: "Use listProducts instead")
+
+  """Get a list of recent drops from own network"""
+  recentDrops(
+    """Number of elemts to retrieve, defaults to 3"""
+    first: Int = 3
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [Drop]
+
+  """Get a list   of products"""
+  userProducts(
+    """Number of elements to retrieve, defaults to 10"""
+    first: Int = 10
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [UserProduct]
+}
+
+"""setting"""
+type Setting {
+  addressAddress: String
+  addressApartment: String
+  addressCity: String
+  addressCompany: String
+  addressCountry: String
+  addressFirstname: String
+  addressLastname: String
+  addressPostalcode: String
+  country: Country
+  customAttach: Int
+  customField1Name: String
+  customField1Status: Int
+  customField2Name: String
+  customField2Status: Int
+  customField3Name: String
+  customField3Status: Int
+  customField4Name: String
+  customField4Status: Int
+  customField5Name: String
+  customField5Status: Int
+  customField6Name: String
+  customField6Status: Int
+  customField7Name: String
+  customField7Status: Int
+  customField8Name: String
+  customField8Status: Int
+  customHeight: String
+  customInventory: Int
+  customInvite: String
+  customInviteSubject: String
+  customOption1Name: String
+  customOption1Status: Int
+  customOption2Name: String
+  customOption2Status: Int
+  customOption3Name: String
+  customOption3Status: Int
+  customOption4Name: String
+  customOption4Status: Int
+  customOption5Name: String
+  customOption5Status: Int
+  customPreorder: Int
+  customSeperator: Int
+  customThankyou: String
+  customUpdate: String
+  customWidth: String
+  fromCsv: Boolean
+  fromEmail: String
+  fromMessage: String
+  fromPdf: Boolean
+  fromSubject: String
+  industries: [String]
+  invoiceText: String
+  ownerId: ID
+  paymentBank: String
+  paymentIban: String
+  paymentVat: String
+  rangeDropInt: String
+  rangeDropText: String
+  rangeOrderInt: String
+  rangeOrderText: String
+  rangeProductInt: String
+  rangeProductText: String
+  rangeSupplierInt: String
+  rangeSupplierText: String
+  showInDashboard: Int
+}
+
+input SettingInput {
+  addressAddress: String
+  addressApartment: String
+  addressCity: String
+  addressCompany: String
+  addressCountry: String
+  addressFirstname: String
+  addressLastname: String
+  addressPostalcode: String
+  country: CountryInput
+  customAttach: Int
+  customField1Name: String
+  customField1Status: Int
+  customField2Name: String
+  customField2Status: Int
+  customField3Name: String
+  customField3Status: Int
+  customField4Name: String
+  customField4Status: Int
+  customField5Name: String
+  customField5Status: Int
+  customField6Name: String
+  customField6Status: Int
+  customField7Name: String
+  customField7Status: Int
+  customField8Name: String
+  customField8Status: Int
+  customHeight: String
+  customInventory: Int
+  customInvite: String
+  customInviteSubject: String
+  customOption1Name: String
+  customOption1Status: Int
+  customOption2Name: String
+  customOption2Status: Int
+  customOption3Name: String
+  customOption3Status: Int
+  customOption4Name: String
+  customOption4Status: Int
+  customOption5Name: String
+  customOption5Status: Int
+  customPreorder: Int
+  customSeperator: Int
+  customThankyou: String
+  customUpdate: String
+  customWidth: String
+  fromCsv: Boolean
+  fromEmail: String
+  fromMessage: String
+  fromPdf: Boolean
+  fromSubject: String
+  industries: [String]
+  invoiceText: String
+  ownerId: ID
+  paymentBank: String
+  paymentIban: String
+  paymentVat: String
+  rangeDropInt: String
+  rangeDropText: String
+  rangeOrderInt: String
+  rangeOrderText: String
+  rangeProductInt: String
+  rangeProductText: String
+  rangeSupplierInt: String
+  rangeSupplierText: String
+  showInDashboard: Int
+}
+
+input ShareDropInput {
+  """share the drop with all contacts"""
+  allContacts: Boolean
+
+  """
+  share the drop with all contacts who are allowed to see the products of the supplier of the drop
+  """
+  allSupplierAccess: Boolean
+
+  """list of contact ids for sharing the drop"""
+  individuals: [ID]
+
+  """Message to be shared with the drop"""
+  message: String!
+
+  """Should the sender receive a copy of the email."""
+  sendMeACopy: Boolean
+}
+
+enum SpreadsheetType {
+  CSV
+  EXCEL
+}
+
+"""Object for collecting filter arguments for field of type String"""
+input StringFilter {
+  eq: String
+  neq: String
+}
+
+type Token {
+  id: ID
+  type: String
+  userId: Int @deprecated(reason: "Use id instead")
+  value: String
+}
+
+input UpdatePricelistValueInput {
+  price: Float
+  productId: ID!
+  rrp: String
+}
+
+input UpdateProductInput {
+  cost: Float
+  customField1: String
+  customField2: String
+  customField3: String
+  customField4: String
+  customField5: String
+  customField6: String
+  customField7: String
+  customField8: String
+  ean: String
+  imgUrls: [String]
+  info: String
+  inventoryStock: String
+  material: String
+  name: String
+  origin: String
+  price: Float
+  rrp: String
+  sku: String
+  supplierId: ID
+  taric: String
+  type: String
+}
+
+"""Represents an uploaded file."""
+scalar Upload
+
+"""Object for collecting filter arguments for field of type urlkey"""
+input UrlkeyFilter {
+  eq: String
+  neq: String
+}
+
+"""user"""
+type User {
+  emailProfile: String
+  facebook: String
+  id: ID
+  img: [String]
+  imgMood: [String]
+  info: String
+  instagram: String
+  name: String
+  phone: String
+
+  """User account configuration options"""
+  setting: Setting
+  twitter: String
+  url: String
+  urlName: String
+  urlkey: String
+}
+
+type UserContact {
+  accessCount: Int
+  contacts: [Contact]
+  count: Int
+}
+
+input UserInput {
+  emailProfile: String
+  facebook: String
+  img: [String]
+  imgMood: [String]
+  info: String
+  instagram: String
+  name: String
+  phone: String
+  twitter: String
+  url: String
+  urlName: String
+}
+
+type UserProduct {
+  cost: Float
+  createdAt: DateTime
+  customField1: String
+  customField2: String
+  customField3: String
+  customField4: String
+  customField5: String
+  customField6: String
+  customField7: String
+  customField8: String
+
+  """User defined custom id of the product"""
+  customId: String
+  customIdInt: String @deprecated(reason: "use customId instead")
+  customIdText: String @deprecated(reason: "use customId instead")
+
+  """International (European) Article Number of the product"""
+  ean: String
+  externalSystemId: ID
+  id: ID
+  images: [String]
+  img: [String]
+
+  """Generic product description"""
+  info: String
+  inventoryStock: String
+  inventoryStockLimit: String @deprecated(reason: "Not in use")
+  material: String
+  name: String
+
+  """Custom variant value for the first configured field"""
+  optionValue1: String
+
+  """Custom variant value for the second configured field"""
+  optionValue2: String
+  origin: String
+
+  """Parent product"""
+  parent: Product
+  parentId: ID
+  parentOrChild: String
+  price: Float
+  rangeProductInt: String @deprecated(reason: "use customId instead")
+  rangeProductText: String @deprecated(reason: "use customId instead")
+
+  """Business. Recommended retail price"""
+  rrp: String
+
+  """Stock-keeping unit (SKU) is a scannable bar code"""
+  sku: String
+  soldOut: Boolean
+  supplier: Contact
+  supplierId: ID
+  supplierName: String @deprecated(reason: "Use name on Supplier")
+
+  """
+  Code designed to show the various rules applying to specific
+  products when imported into the EU
+  """
+  taric: String
+  type: String
+  updatedAt: DateTime
+
+  """Non sequential unique identifier"""
+  urlkey: String
+
+  """Product variants if they exists"""
+  variants(
+    """Number of elemts to retrieve, defaults to 100"""
+    first: Int = 100
+
+    """Number of first elements to be left out, defaults to 0"""
+    offset: Int = 0
+  ): [Product]
+}
+

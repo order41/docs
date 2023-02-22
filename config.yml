@@ -402,7 +402,7 @@ info:
   x-hideIsDeprecated: true
   # Set to true to not render the deprecation reason
   # Default: false
-  x-hideDeprecationReason: false
+  x-hideDeprecationReason: true
 
   #
   ##############################################
@@ -413,7 +413,7 @@ info:
     Order41 - B2B Buying and Selling. Just Better.
 
     We use GraphQL for serving our API, for inforamtion
-    on about the Query Language itself please check out
+    on the Query Language itself please check out
     the official [documentation](https://graphql.org/learn/)
 
     The API is served under https://api.order41.com
